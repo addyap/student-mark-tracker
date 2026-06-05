@@ -180,8 +180,13 @@ function SessionPage() {
           <div><Label>School</Label><Input value={school} onChange={(e) => setSchool(e.target.value)} className="mt-1" placeholder="—" /></div>
         </div>
         <div>
+          <Label>Course</Label>
+          <div className="mt-1"><CourseSelect value={courseId} onChange={setCourseId} includeNone /></div>
+        </div>
+        <div>
           <Label>Title / topic</Label>
           <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder="e.g. Past simple — practice" />
+
         </div>
         <div>
           <Label>Lesson plan</Label>
