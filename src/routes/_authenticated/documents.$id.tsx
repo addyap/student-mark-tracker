@@ -48,11 +48,21 @@ function DocumentPage() {
     },
   });
 
+  const { data: sessions = [] } = useQuery({
+    queryKey: ["sessions-light"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("sessions").select("id, session_date, title, school").order("session_date", { ascending: false });
+      if (error) throw error;
+      return data as { id: string; session_date: string; title: string | null; school: string | null }[];
+    },
+  });
+
   const [title, setTitle] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [collective, setCollective] = useState("");
   const [collectiveMax, setCollectiveMax] = useState("");
   const [marked, setMarked] = useState(false);
+  const [sessionId, setSessionId] = useState<string>("");
 
   useEffect(() => {
     if (!doc) return;
@@ -61,6 +71,7 @@ function DocumentPage() {
     setCollective(doc.collective_mark != null ? String(doc.collective_mark) : "");
     setCollectiveMax(doc.collective_mark_max != null ? String(doc.collective_mark_max) : "");
     setMarked(doc.marked);
+    setSessionId(doc.session_id ?? "");
   }, [doc]);
 
   const saveDoc = useMutation({
