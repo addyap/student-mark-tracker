@@ -57,7 +57,7 @@ function StudentProfile() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attributions")
-        .select("individual_mark, individual_mark_max, documents(id, title, file_url, collective_mark, collective_mark_max, marked, created_at, session_id)")
+        .select("individual_mark, individual_mark_max, documents(id, title, file_url, collective_mark, collective_mark_max, marked, created_at, session_id, course_id)")
         .eq("student_id", id);
       if (error) throw error;
       return data as unknown as AttrRow[];
@@ -69,10 +69,22 @@ function StudentProfile() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attendance")
-        .select("id, progress_note, sessions(id, session_date, title, school)")
+        .select("id, progress_note, sessions(id, session_date, title, school, course_id)")
         .eq("student_id", id);
       if (error) throw error;
       return data as unknown as AttendanceRow[];
+    },
+  });
+
+  const { data: enrolledCourses = [] } = useQuery({
+    queryKey: ["student-courses", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select("course_id, courses(id, name, institution)")
+        .eq("student_id", id);
+      if (error) throw error;
+      return data as unknown as EnrolledCourse[];
     },
   });
 
