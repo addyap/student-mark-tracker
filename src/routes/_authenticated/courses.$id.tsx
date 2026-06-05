@@ -157,7 +157,7 @@ function CoursePage() {
       {sessions.length === 0 ? (
         <p className="text-sm text-muted-foreground">No sessions tagged to this course yet.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="grid gap-2 lg:grid-cols-2">
           {sessions.map((s) => (
             <Link key={s.id} to="/sessions/$id" params={{ id: s.id }} className="block bg-card border rounded-lg p-3 hover:border-primary transition-colors">
               <div className="flex items-center justify-between gap-3 flex-wrap">
