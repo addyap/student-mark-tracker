@@ -69,7 +69,7 @@ function StudentsPage() {
       ) : filteredStudents.length === 0 ? (
         students.length === 0 ? <EmptyState onAdd={openNew} /> : <p className="text-muted-foreground">No students match this course filter.</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredStudents.map((s) => (
             <div key={s.id} className="group bg-card border rounded-lg p-5 hover:border-primary transition-colors">
               <div className="flex items-start justify-between gap-3">
