@@ -19,6 +19,13 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/students", replace: true });
+    });
+  }, [navigate]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,6 +48,23 @@ function AuthPage() {
     } catch (err) {
       toast.error((err as Error).message);
     } finally { setLoading(false); }
+  }
+
+  async function signInWithGoogle() {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      toast.success("Welcome back");
+      navigate({ to: "/students" });
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setGoogleLoading(false);
+    }
   }
 
   return (
