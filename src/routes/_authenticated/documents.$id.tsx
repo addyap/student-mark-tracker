@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { CourseSelect } from "@/components/CourseSelect";
+import { DrivePanel } from "@/components/DrivePanel";
 
 export const Route = createFileRoute("/_authenticated/documents/$id")({
   head: () => ({ meta: [{ title: "Document — Antony Addy Formations" }] }),
@@ -206,6 +207,16 @@ function DocumentPage() {
           </Button>
           <Button onClick={() => saveDoc.mutate()} disabled={saveDoc.isPending}>{saveDoc.isPending ? "Saving…" : "Save document"}</Button>
         </div>
+      </div>
+
+      <div className="mt-6">
+        <DrivePanel
+          onAttach={(link, name) => {
+            setFileUrl(link);
+            if (!title.trim()) setTitle(name);
+            toast.success("Drive link attached — click Save document to persist.");
+          }}
+        />
       </div>
 
       <h2 className="font-display text-xl font-semibold mt-10 mb-2">Attribute to students</h2>

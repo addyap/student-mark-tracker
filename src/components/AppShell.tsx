@@ -22,6 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/courses", label: "Courses", icon: BookOpen },
     { to: "/students", label: "Students", icon: Users },
     { to: "/sessions", label: "Sessions", icon: CalendarDays },
+    { to: "/calendar", label: "Calendar", icon: CalendarDays },
     { to: "/documents", label: "Documents", icon: FileText },
     { to: "/to-mark", label: "To mark", icon: CheckSquare },
     { to: "/export", label: "Export", icon: Download },
