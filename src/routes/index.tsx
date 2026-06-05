@@ -12,7 +12,7 @@ function IndexRedirect() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getSession();
-      navigate({ to: data.session ? "/students" : "/auth", replace: true });
+      navigate({ to: data.session ? "/dashboard" : "/auth", replace: true });
     })();
   }, [navigate]);
 
