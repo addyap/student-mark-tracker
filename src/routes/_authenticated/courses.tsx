@@ -49,12 +49,12 @@ function CoursesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-start sm:items-center justify-between mb-8 gap-3 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-semibold">Courses</h1>
-          <p className="text-muted-foreground mt-1">Cohorts you teach — group students, sessions and documents by class.</p>
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold">Courses</h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Cohorts you teach — group students, sessions and documents by class.</p>
         </div>
-        <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> Add course</Button>
+        <Button onClick={openNew} className="shrink-0"><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Add course</span><span className="sm:hidden">Add</span></Button>
       </div>
 
       {isLoading ? (
