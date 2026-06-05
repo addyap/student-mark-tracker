@@ -25,6 +25,7 @@ type Session = {
   school: string | null;
   title: string | null;
   lesson_plan: string | null;
+  course_id: string | null;
 };
 
 type Attendance = {
