@@ -22,6 +22,7 @@ type AttrRow = {
     marked: boolean;
     created_at: string;
     session_id: string | null;
+    course_id: string | null;
   } | null;
 };
 
@@ -33,8 +34,11 @@ type AttendanceRow = {
     session_date: string;
     title: string | null;
     school: string | null;
+    course_id: string | null;
   } | null;
 };
+
+type EnrolledCourse = { course_id: string; courses: { id: string; name: string; institution: string | null } | null };
 
 function StudentProfile() {
   const { id } = Route.useParams();
