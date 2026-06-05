@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download } from "lucide-react";
+import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download, BookOpen } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GlobalSearch } from "@/components/GlobalSearch";
 
@@ -18,6 +18,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/courses", label: "Courses", icon: BookOpen },
     { to: "/students", label: "Students", icon: Users },
     { to: "/sessions", label: "Sessions", icon: CalendarDays },
     { to: "/documents", label: "Documents", icon: FileText },
@@ -43,18 +44,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 px-2.5 py-2 rounded-md text-sm font-medium transition-colors ${
                     active ? "bg-white/15 text-white" : "text-primary-foreground/75 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
-                  <span className="hidden lg:inline">{item.label}</span>
+                  <span className="hidden xl:inline">{item.label}</span>
                 </Link>
               );
             })}
-            <button onClick={signOut} className="ml-2 flex items-center gap-2 px-3 py-2 rounded-md text-sm text-primary-foreground/75 hover:text-white hover:bg-white/10">
+            <button onClick={signOut} className="ml-2 flex items-center gap-2 px-2.5 py-2 rounded-md text-sm text-primary-foreground/75 hover:text-white hover:bg-white/10">
               <LogOut className="h-4 w-4" />
-              <span className="hidden lg:inline">Sign out</span>
+              <span className="hidden xl:inline">Sign out</span>
             </button>
           </nav>
         </div>
