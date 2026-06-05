@@ -152,6 +152,22 @@ function DocumentPage() {
           </div>
         </div>
 
+        <div>
+          <Label>Linked session (optional)</Label>
+          <select
+            value={sessionId}
+            onChange={(e) => setSessionId(e.target.value)}
+            className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            <option value="">— No session —</option>
+            {sessions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {new Date(s.session_date + "T00:00:00").toLocaleDateString()} {s.school ? `· ${s.school}` : ""}{s.title ? ` · ${s.title}` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="grid sm:grid-cols-3 gap-4 items-end">
           <div className="sm:col-span-2 grid grid-cols-2 gap-3">
             <div>
