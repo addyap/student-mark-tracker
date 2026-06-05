@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { avg, pct, type Student } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { ArrowLeft, ExternalLink, CalendarDays, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/students/$id")({
@@ -22,6 +24,7 @@ type AttrRow = {
     marked: boolean;
     created_at: string;
     session_id: string | null;
+    course_id: string | null;
   } | null;
 };
 
@@ -33,8 +36,11 @@ type AttendanceRow = {
     session_date: string;
     title: string | null;
     school: string | null;
+    course_id: string | null;
   } | null;
 };
+
+type EnrolledCourse = { course_id: string; courses: { id: string; name: string; institution: string | null } | null };
 
 function StudentProfile() {
   const { id } = Route.useParams();
@@ -53,7 +59,7 @@ function StudentProfile() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attributions")
-        .select("individual_mark, individual_mark_max, documents(id, title, file_url, collective_mark, collective_mark_max, marked, created_at, session_id)")
+        .select("individual_mark, individual_mark_max, documents(id, title, file_url, collective_mark, collective_mark_max, marked, created_at, session_id, course_id)")
         .eq("student_id", id);
       if (error) throw error;
       return data as unknown as AttrRow[];
@@ -65,17 +71,45 @@ function StudentProfile() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attendance")
-        .select("id, progress_note, sessions(id, session_date, title, school)")
+        .select("id, progress_note, sessions(id, session_date, title, school, course_id)")
         .eq("student_id", id);
       if (error) throw error;
       return data as unknown as AttendanceRow[];
     },
   });
 
-  const individualPcts = rows.map((r) => pct(r.individual_mark, r.individual_mark_max));
-  const collectivePcts = rows.map((r) => pct(r.documents?.collective_mark, r.documents?.collective_mark_max));
+  const { data: enrolledCourses = [] } = useQuery({
+    queryKey: ["student-courses", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select("course_id, courses(id, name, institution)")
+        .eq("student_id", id);
+      if (error) throw error;
+      return data as unknown as EnrolledCourse[];
+    },
+  });
+
+  const [courseScope, setCourseScope] = useState<string>("__all__");
+
+  const scopedRows = courseScope === "__all__" ? rows : rows.filter((r) => r.documents?.course_id === courseScope);
+  const scopedAttendance = courseScope === "__all__" ? attendance : attendance.filter((a) => a.sessions?.course_id === courseScope);
+
+  const individualPcts = scopedRows.map((r) => pct(r.individual_mark, r.individual_mark_max));
+  const collectivePcts = scopedRows.map((r) => pct(r.documents?.collective_mark, r.documents?.collective_mark_max));
   const avgIndividual = avg(individualPcts);
   const avgCollective = avg(collectivePcts);
+
+  // Per-course breakdown
+  const perCourse = enrolledCourses
+    .map((ec) => ec.courses)
+    .filter((c): c is { id: string; name: string; institution: string | null } => !!c)
+    .map((c) => {
+      const cRows = rows.filter((r) => r.documents?.course_id === c.id);
+      const ind = avg(cRows.map((r) => pct(r.individual_mark, r.individual_mark_max)));
+      const col = avg(cRows.map((r) => pct(r.documents?.collective_mark, r.documents?.collective_mark_max)));
+      return { course: c, avgInd: ind, avgCol: col, count: cRows.length };
+    });
 
   if (!student) return <p className="text-muted-foreground">Loading…</p>;
 
@@ -85,7 +119,7 @@ function StudentProfile() {
     | { kind: "doc"; date: string; sortKey: string; doc: NonNullable<AttrRow["documents"]>; individual: number | null; individualMax: number | null };
 
   const items: TimelineItem[] = [];
-  for (const a of attendance) {
+  for (const a of scopedAttendance) {
     if (!a.sessions) continue;
     items.push({
       kind: "session",
@@ -97,7 +131,7 @@ function StudentProfile() {
       note: a.progress_note,
     });
   }
-  for (const r of rows) {
+  for (const r of scopedRows) {
     if (!r.documents) continue;
     items.push({
       kind: "doc",
@@ -125,10 +159,52 @@ function StudentProfile() {
         {student.phone && <span>{student.phone}</span>}
       </div>
 
-      <div className="mt-8 grid sm:grid-cols-2 gap-4">
-        <StatCard label="Average individual mark" value={avgIndividual} hint="Across this student's individual marks only" />
-        <StatCard label="Average collective mark" value={avgCollective} hint="Across documents shared with the student" accent />
+      {perCourse.length > 0 && (
+        <div className="mt-6">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2">Enrolled in</div>
+          <div className="flex gap-2 flex-wrap">
+            {perCourse.map((p) => (
+              <Link key={p.course.id} to="/courses/$id" params={{ id: p.course.id }} className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-sm font-medium px-3 py-1 hover:bg-primary/15">
+                {p.course.name}
+                {p.course.institution && <span className="text-primary/70 text-xs">· {p.course.institution}</span>}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {enrolledCourses.length > 0 && (
+        <div className="mt-6 flex items-center gap-3">
+          <Label className="text-xs uppercase tracking-wider text-muted-foreground">View</Label>
+          <select value={courseScope} onChange={(e) => setCourseScope(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm">
+            <option value="__all__">All courses</option>
+            {perCourse.map((p) => <option key={p.course.id} value={p.course.id}>{p.course.name}</option>)}
+          </select>
+        </div>
+      )}
+
+      <div className="mt-6 grid sm:grid-cols-2 gap-4">
+        <StatCard label={courseScope === "__all__" ? "Average individual mark" : "Individual avg (this course)"} value={avgIndividual} hint="Across this student's individual marks" />
+        <StatCard label={courseScope === "__all__" ? "Average collective mark" : "Collective avg (this course)"} value={avgCollective} hint="Across documents shared with the student" accent />
       </div>
+
+      {perCourse.length > 1 && (
+        <div className="mt-6">
+          <h2 className="font-display text-xl font-semibold mb-3">Per-course summary</h2>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {perCourse.map((p) => (
+              <div key={p.course.id} className="bg-card border rounded-lg p-4">
+                <div className="font-medium">{p.course.name}</div>
+                <div className="mt-2 flex gap-6 text-sm">
+                  <div><span className="text-xs uppercase tracking-wider text-muted-foreground mr-1">Ind.</span>{p.avgInd === null ? "—" : `${p.avgInd.toFixed(1)}%`}</div>
+                  <div><span className="text-xs uppercase tracking-wider text-muted-foreground mr-1">Coll.</span>{p.avgCol === null ? "—" : `${p.avgCol.toFixed(1)}%`}</div>
+                  <div className="text-muted-foreground">{p.count} doc{p.count === 1 ? "" : "s"}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <h2 className="font-display text-xl font-semibold mt-10 mb-3">Progress timeline</h2>
       {items.length === 0 ? (

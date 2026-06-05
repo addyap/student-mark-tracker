@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDate } from "./sessions";
+import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/sessions/$id")({
   head: () => ({ meta: [{ title: "Session — Trainer" }] }),
@@ -24,6 +25,7 @@ type Session = {
   school: string | null;
   title: string | null;
   lesson_plan: string | null;
+  course_id: string | null;
 };
 
 type Attendance = {
@@ -86,6 +88,7 @@ function SessionPage() {
   const [school, setSchool] = useState("");
   const [title, setTitle] = useState("");
   const [lessonPlan, setLessonPlan] = useState("");
+  const [courseId, setCourseId] = useState<string>("");
 
   useEffect(() => {
     if (!session) return;
@@ -94,6 +97,7 @@ function SessionPage() {
     setSchool(session.school ?? "");
     setTitle(session.title ?? "");
     setLessonPlan(session.lesson_plan ?? "");
+    setCourseId(session.course_id ?? "");
   }, [session]);
 
   const save = useMutation({
@@ -104,6 +108,7 @@ function SessionPage() {
         school: school.trim() || null,
         title: title.trim() || null,
         lesson_plan: lessonPlan.trim() || null,
+        course_id: courseId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -111,6 +116,7 @@ function SessionPage() {
       toast.success("Saved");
       qc.invalidateQueries({ queryKey: ["session", id] });
       qc.invalidateQueries({ queryKey: ["sessions"] });
+      qc.invalidateQueries({ queryKey: ["course-sessions"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -174,8 +180,13 @@ function SessionPage() {
           <div><Label>School</Label><Input value={school} onChange={(e) => setSchool(e.target.value)} className="mt-1" placeholder="—" /></div>
         </div>
         <div>
+          <Label>Course</Label>
+          <div className="mt-1"><CourseSelect value={courseId} onChange={setCourseId} includeNone /></div>
+        </div>
+        <div>
           <Label>Title / topic</Label>
           <Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder="e.g. Past simple — practice" />
+
         </div>
         <div>
           <Label>Lesson plan</Label>

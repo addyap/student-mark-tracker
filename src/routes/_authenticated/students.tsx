@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getOwnerId, type Student } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
+import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/students")({
   head: () => ({ meta: [{ title: "Students — Trainer" }] }),
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/students")({
 
 function StudentsPage() {
   const qc = useQueryClient();
+  const [courseFilter, setCourseFilter] = useState<string>("__all__");
+
   const { data: students = [], isLoading } = useQuery({
     queryKey: ["students"],
     queryFn: async () => {
@@ -27,6 +30,21 @@ function StudentsPage() {
     },
   });
 
+  const { data: enrollments = [] } = useQuery({
+    queryKey: ["enrollments-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("enrollments").select("course_id, student_id");
+      if (error) throw error;
+      return data as { course_id: string; student_id: string }[];
+    },
+  });
+
+  const filteredStudents = useMemo(() => {
+    if (courseFilter === "__all__") return students;
+    const ids = new Set(enrollments.filter((e) => e.course_id === courseFilter).map((e) => e.student_id));
+    return students.filter((s) => ids.has(s.id));
+  }, [students, enrollments, courseFilter]);
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
 
@@ -35,21 +53,24 @@ function StudentsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
         <div>
           <h1 className="font-display text-3xl font-semibold">Students</h1>
-          <p className="text-muted-foreground mt-1">Everyone you teach, tagged by school.</p>
+          <p className="text-muted-foreground mt-1">Everyone you teach, tagged by school and course.</p>
         </div>
-        <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> Add student</Button>
+        <div className="flex items-center gap-3">
+          <div className="w-56"><CourseSelect value={courseFilter} onChange={setCourseFilter} includeAll /></div>
+          <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> Add student</Button>
+        </div>
       </div>
 
       {isLoading ? (
         <p className="text-muted-foreground">Loading…</p>
-      ) : students.length === 0 ? (
-        <EmptyState onAdd={openNew} />
+      ) : filteredStudents.length === 0 ? (
+        students.length === 0 ? <EmptyState onAdd={openNew} /> : <p className="text-muted-foreground">No students match this course filter.</p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {students.map((s) => (
+          {filteredStudents.map((s) => (
             <div key={s.id} className="group bg-card border rounded-lg p-5 hover:border-primary transition-colors">
               <div className="flex items-start justify-between gap-3">
                 <Link to="/students/$id" params={{ id: s.id }} className="flex-1 min-w-0">

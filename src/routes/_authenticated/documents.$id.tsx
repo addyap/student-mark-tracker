@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/documents/$id")({
   head: () => ({ meta: [{ title: "Document — Trainer" }] }),
@@ -63,6 +64,7 @@ function DocumentPage() {
   const [collectiveMax, setCollectiveMax] = useState("");
   const [marked, setMarked] = useState(false);
   const [sessionId, setSessionId] = useState<string>("");
+  const [courseId, setCourseId] = useState<string>("");
 
   useEffect(() => {
     if (!doc) return;
@@ -72,6 +74,7 @@ function DocumentPage() {
     setCollectiveMax(doc.collective_mark_max != null ? String(doc.collective_mark_max) : "");
     setMarked(doc.marked);
     setSessionId(doc.session_id ?? "");
+    setCourseId(((doc as unknown as { course_id: string | null }).course_id) ?? "");
   }, [doc]);
 
   const saveDoc = useMutation({
@@ -83,6 +86,7 @@ function DocumentPage() {
         collective_mark_max: collectiveMax === "" ? null : Number(collectiveMax),
         marked,
         session_id: sessionId || null,
+        course_id: courseId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -92,6 +96,7 @@ function DocumentPage() {
       qc.invalidateQueries({ queryKey: ["documents"] });
       qc.invalidateQueries({ queryKey: ["student-attributions"] });
       qc.invalidateQueries({ queryKey: ["documents-light"] });
+      qc.invalidateQueries({ queryKey: ["course-documents"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -152,21 +157,28 @@ function DocumentPage() {
           </div>
         </div>
 
-        <div>
-          <Label>Linked session (optional)</Label>
-          <select
-            value={sessionId}
-            onChange={(e) => setSessionId(e.target.value)}
-            className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            <option value="">— No session —</option>
-            {sessions.map((s) => (
-              <option key={s.id} value={s.id}>
-                {new Date(s.session_date + "T00:00:00").toLocaleDateString()} {s.school ? `· ${s.school}` : ""}{s.title ? ` · ${s.title}` : ""}
-              </option>
-            ))}
-          </select>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <Label>Course (optional)</Label>
+            <div className="mt-1"><CourseSelect value={courseId} onChange={setCourseId} includeNone /></div>
+          </div>
+          <div>
+            <Label>Linked session (optional)</Label>
+            <select
+              value={sessionId}
+              onChange={(e) => setSessionId(e.target.value)}
+              className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              <option value="">— No session —</option>
+              {sessions.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {new Date(s.session_date + "T00:00:00").toLocaleDateString()} {s.school ? `· ${s.school}` : ""}{s.title ? ` · ${s.title}` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
 
         <div className="grid sm:grid-cols-3 gap-4 items-end">
           <div className="sm:col-span-2 grid grid-cols-2 gap-3">

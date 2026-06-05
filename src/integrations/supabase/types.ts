@@ -101,10 +101,44 @@ export type Database = {
           },
         ]
       }
+      courses: {
+        Row: {
+          academic_year: string | null
+          created_at: string
+          id: string
+          institution: string | null
+          name: string
+          notes: string | null
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          academic_year?: string | null
+          created_at?: string
+          id?: string
+          institution?: string | null
+          name: string
+          notes?: string | null
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string | null
+          created_at?: string
+          id?: string
+          institution?: string | null
+          name?: string
+          notes?: string | null
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           collective_mark: number | null
           collective_mark_max: number | null
+          course_id: string | null
           created_at: string
           file_url: string | null
           id: string
@@ -117,6 +151,7 @@ export type Database = {
         Insert: {
           collective_mark?: number | null
           collective_mark_max?: number | null
+          course_id?: string | null
           created_at?: string
           file_url?: string | null
           id?: string
@@ -129,6 +164,7 @@ export type Database = {
         Update: {
           collective_mark?: number | null
           collective_mark_max?: number | null
+          course_id?: string | null
           created_at?: string
           file_url?: string | null
           id?: string
@@ -140,6 +176,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "documents_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "documents_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
@@ -148,8 +191,48 @@ export type Database = {
           },
         ]
       }
+      enrollments: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          owner_id: string
+          student_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          student_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sessions: {
         Row: {
+          course_id: string | null
           created_at: string
           id: string
           lesson_plan: string | null
@@ -161,6 +244,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          course_id?: string | null
           created_at?: string
           id?: string
           lesson_plan?: string | null
@@ -172,6 +256,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          course_id?: string | null
           created_at?: string
           id?: string
           lesson_plan?: string | null
@@ -182,7 +267,15 @@ export type Database = {
           title?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       students: {
         Row: {
