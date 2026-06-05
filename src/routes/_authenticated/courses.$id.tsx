@@ -130,8 +130,8 @@ function CoursePage() {
         ) : (
           <div className="bg-card border rounded-lg divide-y mt-3">
             {students.map((s) => (
-              <label key={s.id} className="p-3 flex items-center gap-3 cursor-pointer">
-                <Checkbox checked={enrolledIds.has(s.id)} onCheckedChange={(c) => toggleEnrollment(s.id, !!c)} />
+              <label key={s.id} className="p-3 flex items-center gap-3 cursor-pointer min-h-[44px]">
+                <Checkbox checked={enrolledIds.has(s.id)} onCheckedChange={(c) => toggleEnrollment(s.id, !!c)} className="h-5 w-5" />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium">{s.name}</div>
                   {s.school && <div className="text-xs text-muted-foreground">{s.school}</div>}
