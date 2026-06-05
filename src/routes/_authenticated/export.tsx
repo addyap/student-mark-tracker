@@ -228,7 +228,7 @@ function ExportPage() {
         <p className="text-muted-foreground mt-1">Download clean CSVs for reporting and émargement.</p>
       </div>
 
-      <div className="bg-card border rounded-lg p-6 space-y-5 max-w-2xl">
+      <div className="bg-card border rounded-lg p-6 space-y-5 max-w-4xl">
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <Label>Course</Label>
