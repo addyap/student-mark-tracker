@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attributions: {
+        Row: {
+          created_at: string
+          document_id: string
+          id: string
+          individual_mark: number | null
+          individual_mark_max: number | null
+          owner_id: string
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          id?: string
+          individual_mark?: number | null
+          individual_mark_max?: number | null
+          owner_id: string
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          id?: string
+          individual_mark?: number | null
+          individual_mark_max?: number | null
+          owner_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attributions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attributions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          collective_mark: number | null
+          collective_mark_max: number | null
+          created_at: string
+          file_url: string | null
+          id: string
+          marked: boolean
+          owner_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          collective_mark?: number | null
+          collective_mark_max?: number | null
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          marked?: boolean
+          owner_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          collective_mark?: number | null
+          collective_mark_max?: number | null
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          marked?: boolean
+          owner_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          owner_id: string
+          phone: string | null
+          school: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          phone?: string | null
+          school?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          school?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
