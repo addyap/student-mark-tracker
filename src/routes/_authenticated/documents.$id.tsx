@@ -64,6 +64,7 @@ function DocumentPage() {
   const [collectiveMax, setCollectiveMax] = useState("");
   const [marked, setMarked] = useState(false);
   const [sessionId, setSessionId] = useState<string>("");
+  const [courseId, setCourseId] = useState<string>("");
 
   useEffect(() => {
     if (!doc) return;
@@ -73,6 +74,7 @@ function DocumentPage() {
     setCollectiveMax(doc.collective_mark_max != null ? String(doc.collective_mark_max) : "");
     setMarked(doc.marked);
     setSessionId(doc.session_id ?? "");
+    setCourseId(((doc as unknown as { course_id: string | null }).course_id) ?? "");
   }, [doc]);
 
   const saveDoc = useMutation({
@@ -84,6 +86,7 @@ function DocumentPage() {
         collective_mark_max: collectiveMax === "" ? null : Number(collectiveMax),
         marked,
         session_id: sessionId || null,
+        course_id: courseId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -93,6 +96,7 @@ function DocumentPage() {
       qc.invalidateQueries({ queryKey: ["documents"] });
       qc.invalidateQueries({ queryKey: ["student-attributions"] });
       qc.invalidateQueries({ queryKey: ["documents-light"] });
+      qc.invalidateQueries({ queryKey: ["course-documents"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
