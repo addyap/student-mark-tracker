@@ -234,26 +234,26 @@ function DocumentPage() {
             const attr = attrByStudent.get(s.id);
             const checked = !!attr;
             return (
-              <div key={s.id} className="p-4 flex items-center gap-4 flex-wrap">
-                <label className="flex items-center gap-3 flex-1 min-w-[200px] cursor-pointer">
-                  <Checkbox checked={checked} onCheckedChange={(c) => toggleStudent(s.id, !!c)} />
+              <div key={s.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 flex-wrap">
+                <label className="flex items-center gap-3 flex-1 min-w-[180px] cursor-pointer min-h-[44px]">
+                  <Checkbox checked={checked} onCheckedChange={(c) => toggleStudent(s.id, !!c)} className="h-5 w-5" />
                   <div>
                     <div className="font-medium">{s.name}</div>
                     {s.school && <div className="text-xs text-muted-foreground">{s.school}</div>}
                   </div>
                 </label>
                 {checked && attr && (
-                  <div className="flex items-center gap-2">
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground mr-1">Individual</div>
+                  <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto pl-8 sm:pl-0">
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground mr-1 hidden sm:block">Individual</div>
                     <Input
-                      type="number" step="0.5"
+                      type="number" step="0.5" inputMode="decimal"
                       defaultValue={attr.individual_mark ?? ""}
                       onBlur={(e) => updateAttribution(attr, { individual_mark: e.target.value === "" ? null : Number(e.target.value) })}
-                      className="w-20" placeholder="—"
+                      className="w-20" placeholder="mark"
                     />
                     <span className="text-muted-foreground">/</span>
                     <Input
-                      type="number" step="0.5"
+                      type="number" step="0.5" inputMode="decimal"
                       defaultValue={attr.individual_mark_max ?? ""}
                       onBlur={(e) => updateAttribution(attr, { individual_mark_max: e.target.value === "" ? null : Number(e.target.value) })}
                       className="w-20" placeholder="max"
