@@ -160,11 +160,12 @@ function ExportPage() {
     setBusy("attendance");
     try {
       let seQ = supabase.from("sessions")
-        .select("id, session_date, session_time, school, title")
+        .select("id, session_date, session_time, school, title, course_id, courses(name)")
         .gte("session_date", from)
         .lte("session_date", to)
         .order("session_date").order("session_time", { nullsFirst: true });
       if (school !== "__all__") seQ = seQ.eq("school", school);
+      if (courseId !== "__all__") seQ = seQ.eq("course_id", courseId);
       const { data: sessions, error: seErr } = await seQ;
       if (seErr) throw seErr;
       if (!sessions || sessions.length === 0) { toast.error("No sessions in that range"); setBusy(null); return; }
@@ -177,7 +178,7 @@ function ExportPage() {
       if (aErr) throw aErr;
 
       const rows: any[][] = [[
-        "Date", "Time", "School", "Session title", "Student name", "Student school", "Signature", "Progress note",
+        "Date", "Time", "School", "Course", "Session title", "Student name", "Student school", "Signature", "Progress note",
       ]];
       const bySession = new Map<string, any[]>();
       (att ?? []).forEach((a: any) => {
@@ -189,14 +190,16 @@ function ExportPage() {
         const list = (bySession.get(s.id) ?? []).sort((a: any, b: any) =>
           String(a.students?.name ?? "").localeCompare(String(b.students?.name ?? ""))
         );
+        const courseName = s.courses?.name ?? "";
         if (list.length === 0) {
-          rows.push([s.session_date, s.session_time ?? "", s.school ?? "", s.title ?? "", "(no attendees)", "", "", ""]);
+          rows.push([s.session_date, s.session_time ?? "", s.school ?? "", courseName, s.title ?? "", "(no attendees)", "", "", ""]);
         } else {
           list.forEach((a: any) => {
             rows.push([
               s.session_date,
               s.session_time ?? "",
               s.school ?? "",
+              courseName,
               s.title ?? "",
               a.students?.name ?? "",
               a.students?.school ?? "",
@@ -207,8 +210,9 @@ function ExportPage() {
         }
       });
 
-      const tag = school === "__all__" ? "all-schools" : school.replace(/\s+/g, "_");
-      download(`emargement_${tag}_${from}_${to}.csv`, toCsv(rows));
+      const courseTag = courseId === "__all__" ? "" : `_course-${(courses.find((c) => c.id === courseId)?.name ?? "course").replace(/\s+/g, "_")}`;
+      const schoolTag = school === "__all__" ? "all-schools" : school.replace(/\s+/g, "_");
+      download(`emargement_${schoolTag}${courseTag}_${from}_${to}.csv`, toCsv(rows));
       toast.success("Attendance sheet downloaded");
     } catch (e) {
       toast.error((e as Error).message);
