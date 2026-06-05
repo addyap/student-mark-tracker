@@ -2,11 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download, FileSpreadsheet, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
+import { useCourses } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/export")({
   head: () => ({ meta: [{ title: "Export — Trainer" }] }),
