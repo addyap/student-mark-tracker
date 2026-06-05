@@ -81,7 +81,7 @@ function StudentsPage() {
                     {s.phone && <div>{s.phone}</div>}
                   </div>
                 </Link>
-                <button onClick={() => openEdit(s)} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => openEdit(s)} aria-label="Edit student" className="text-muted-foreground hover:text-primary p-2 -m-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Pencil className="h-4 w-4" />
                 </button>
               </div>
