@@ -229,7 +229,7 @@ function ExportPage() {
       </div>
 
       <div className="bg-card border rounded-lg p-6 space-y-5 max-w-4xl">
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
             <Label>Course</Label>
             <select
@@ -252,8 +252,6 @@ function ExportPage() {
               {schools.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3">
           <div><Label>From</Label><Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="mt-1" /></div>
           <div><Label>To</Label><Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="mt-1" /></div>
         </div>
