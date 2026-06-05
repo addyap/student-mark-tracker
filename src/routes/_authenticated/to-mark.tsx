@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckSquare, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/to-mark")({
-  head: () => ({ meta: [{ title: "To mark — Trainer" }] }),
+  head: () => ({ meta: [{ title: "To mark — Antony Addy Formations" }] }),
   component: ToMarkPage,
 });
 

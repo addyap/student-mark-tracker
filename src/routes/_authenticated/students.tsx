@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/students")({
-  head: () => ({ meta: [{ title: "Students — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Students — Antony Addy Formations" }] }),
   component: StudentsPage,
 });
 

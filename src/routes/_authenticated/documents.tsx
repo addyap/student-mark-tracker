@@ -13,7 +13,7 @@ import { MarkedBadge } from "./students.$id";
 import { CourseSelect, useCourses } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/documents")({
-  head: () => ({ meta: [{ title: "Documents — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Documents — Antony Addy Formations" }] }),
   component: DocumentsPage,
 });
 

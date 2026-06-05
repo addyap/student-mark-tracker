@@ -52,7 +52,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Trainer — Student Tracker" },
+      { title: "Antony Addy Formations — Student Tracker" },
       { name: "description", content: "Private dashboard for tracking English-trainer student work." },
       { name: "robots", content: "noindex,nofollow" },
     ],
