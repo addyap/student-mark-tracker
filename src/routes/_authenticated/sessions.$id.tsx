@@ -88,6 +88,7 @@ function SessionPage() {
   const [school, setSchool] = useState("");
   const [title, setTitle] = useState("");
   const [lessonPlan, setLessonPlan] = useState("");
+  const [courseId, setCourseId] = useState<string>("");
 
   useEffect(() => {
     if (!session) return;
@@ -96,6 +97,7 @@ function SessionPage() {
     setSchool(session.school ?? "");
     setTitle(session.title ?? "");
     setLessonPlan(session.lesson_plan ?? "");
+    setCourseId(session.course_id ?? "");
   }, [session]);
 
   const save = useMutation({
@@ -106,6 +108,7 @@ function SessionPage() {
         school: school.trim() || null,
         title: title.trim() || null,
         lesson_plan: lessonPlan.trim() || null,
+        course_id: courseId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -113,6 +116,7 @@ function SessionPage() {
       toast.success("Saved");
       qc.invalidateQueries({ queryKey: ["session", id] });
       qc.invalidateQueries({ queryKey: ["sessions"] });
+      qc.invalidateQueries({ queryKey: ["course-sessions"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
