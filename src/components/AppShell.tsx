@@ -1,5 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import logoAsset from "@/assets/logo.png.asset.json";
 import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download, BookOpen } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GlobalSearch } from "@/components/GlobalSearch";
@@ -31,8 +32,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="bg-primary text-primary-foreground">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
-            <span className="h-3.5 w-3.5 rounded-sm bg-brand-red" />
-            <span className="font-display text-lg font-semibold tracking-tight">Trainer</span>
+            <img src={logoAsset.url} alt="Antony Addy Formations" className="h-9 w-9 object-contain" />
+            <span className="hidden sm:inline font-display text-lg font-semibold tracking-tight">Antony Addy</span>
           </Link>
           <div className="hidden md:block flex-1 max-w-xs">
             <GlobalSearch />

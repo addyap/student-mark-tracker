@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import logoAsset from "@/assets/logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,9 +72,9 @@ function AuthPage() {
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="hidden lg:flex flex-col justify-between bg-primary text-primary-foreground p-12">
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium tracking-wider uppercase opacity-80">
-            <span className="h-3 w-3 rounded-sm bg-brand-red" />
-            Trainer
+          <div className="flex items-center gap-3 text-sm font-medium tracking-wider uppercase opacity-90">
+            <img src={logoAsset.url} alt="Antony Addy Formations" className="h-10 w-10 object-contain" />
+            Antony Addy Formations
           </div>
           <h1 className="mt-12 font-display text-5xl font-bold leading-tight">
             Track every<br />student's work.
@@ -82,7 +83,7 @@ function AuthPage() {
             A private workspace for certified English trainers. Documents, marks, and individual progress — kept clean and separate.
           </p>
         </div>
-        <div className="text-xs opacity-60">© Trainer. Private workspace.</div>
+        <div className="text-xs opacity-60">© Antony Addy Formations. Private workspace.</div>
       </div>
       <div className="flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-sm">
