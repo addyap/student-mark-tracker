@@ -176,7 +176,7 @@ function CoursePage() {
       {documents.length === 0 ? (
         <p className="text-sm text-muted-foreground">No documents tagged to this course yet.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="grid gap-2 lg:grid-cols-2">
           {documents.map((d) => (
             <Link key={d.id} to="/documents/$id" params={{ id: d.id }} className="block bg-card border rounded-lg p-3 hover:border-primary transition-colors">
               <div className="flex items-center justify-between gap-3 flex-wrap">
