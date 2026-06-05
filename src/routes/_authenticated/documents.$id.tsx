@@ -82,6 +82,7 @@ function DocumentPage() {
         collective_mark: collective === "" ? null : Number(collective),
         collective_mark_max: collectiveMax === "" ? null : Number(collectiveMax),
         marked,
+        session_id: sessionId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -90,6 +91,7 @@ function DocumentPage() {
       qc.invalidateQueries({ queryKey: ["document", id] });
       qc.invalidateQueries({ queryKey: ["documents"] });
       qc.invalidateQueries({ queryKey: ["student-attributions"] });
+      qc.invalidateQueries({ queryKey: ["documents-light"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
