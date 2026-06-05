@@ -79,7 +79,7 @@ function CoursesPage() {
                     <div>{c.enrollments.length} {c.enrollments.length === 1 ? "student" : "students"}</div>
                   </div>
                 </Link>
-                <button onClick={() => openEdit(c)} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => openEdit(c)} aria-label="Edit course" className="text-muted-foreground hover:text-primary p-2 -m-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Pencil className="h-4 w-4" />
                 </button>
               </div>
