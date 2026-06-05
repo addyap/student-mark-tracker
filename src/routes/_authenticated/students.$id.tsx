@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, ExternalLink, CalendarDays, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/students/$id")({
-  head: () => ({ meta: [{ title: "Student profile — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Student profile — Antony Addy Formations" }] }),
   component: StudentProfile,
 });
 

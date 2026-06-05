@@ -5,7 +5,7 @@ import { CalendarDays, FileText, CheckSquare, ExternalLink } from "lucide-react"
 import { formatDate } from "./sessions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Antony Addy Formations" }] }),
   component: DashboardPage,
 });
 

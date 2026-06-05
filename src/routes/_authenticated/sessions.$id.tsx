@@ -14,7 +14,7 @@ import { formatDate } from "./sessions";
 import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/sessions/$id")({
-  head: () => ({ meta: [{ title: "Session — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Session — Antony Addy Formations" }] }),
   component: SessionPage,
 });
 

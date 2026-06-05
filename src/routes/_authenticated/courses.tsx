@@ -13,7 +13,7 @@ import { Plus, Pencil, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/courses")({
-  head: () => ({ meta: [{ title: "Courses — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Courses — Antony Addy Formations" }] }),
   component: CoursesPage,
 });
 

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Trainer" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Antony Addy Formations" }, { name: "robots", content: "noindex" }] }),
   component: IndexRedirect,
 });
 

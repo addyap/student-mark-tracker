@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useCourses } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/export")({
-  head: () => ({ meta: [{ title: "Export — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Export — Antony Addy Formations" }] }),
   component: ExportPage,
 });
 

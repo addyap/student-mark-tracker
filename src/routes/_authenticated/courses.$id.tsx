@@ -12,7 +12,7 @@ import { formatDate } from "./sessions";
 import { MarkedBadge } from "./students.$id";
 
 export const Route = createFileRoute("/_authenticated/courses/$id")({
-  head: () => ({ meta: [{ title: "Course — Trainer" }] }),
+  head: () => ({ meta: [{ title: "Course — Antony Addy Formations" }] }),
   component: CoursePage,
 });
 
