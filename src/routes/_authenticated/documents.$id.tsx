@@ -48,11 +48,21 @@ function DocumentPage() {
     },
   });
 
+  const { data: sessions = [] } = useQuery({
+    queryKey: ["sessions-light"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("sessions").select("id, session_date, title, school").order("session_date", { ascending: false });
+      if (error) throw error;
+      return data as { id: string; session_date: string; title: string | null; school: string | null }[];
+    },
+  });
+
   const [title, setTitle] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [collective, setCollective] = useState("");
   const [collectiveMax, setCollectiveMax] = useState("");
   const [marked, setMarked] = useState(false);
+  const [sessionId, setSessionId] = useState<string>("");
 
   useEffect(() => {
     if (!doc) return;
@@ -61,6 +71,7 @@ function DocumentPage() {
     setCollective(doc.collective_mark != null ? String(doc.collective_mark) : "");
     setCollectiveMax(doc.collective_mark_max != null ? String(doc.collective_mark_max) : "");
     setMarked(doc.marked);
+    setSessionId(doc.session_id ?? "");
   }, [doc]);
 
   const saveDoc = useMutation({
@@ -71,6 +82,7 @@ function DocumentPage() {
         collective_mark: collective === "" ? null : Number(collective),
         collective_mark_max: collectiveMax === "" ? null : Number(collectiveMax),
         marked,
+        session_id: sessionId || null,
       }).eq("id", id);
       if (error) throw error;
     },
@@ -79,6 +91,7 @@ function DocumentPage() {
       qc.invalidateQueries({ queryKey: ["document", id] });
       qc.invalidateQueries({ queryKey: ["documents"] });
       qc.invalidateQueries({ queryKey: ["student-attributions"] });
+      qc.invalidateQueries({ queryKey: ["documents-light"] });
     },
     onError: (e) => toast.error((e as Error).message),
   });
@@ -137,6 +150,22 @@ function DocumentPage() {
               </a>
             )}
           </div>
+        </div>
+
+        <div>
+          <Label>Linked session (optional)</Label>
+          <select
+            value={sessionId}
+            onChange={(e) => setSessionId(e.target.value)}
+            className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            <option value="">— No session —</option>
+            {sessions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {new Date(s.session_date + "T00:00:00").toLocaleDateString()} {s.school ? `· ${s.school}` : ""}{s.title ? ` · ${s.title}` : ""}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4 items-end">

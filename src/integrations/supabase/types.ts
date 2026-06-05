@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendance: {
+        Row: {
+          created_at: string
+          id: string
+          owner_id: string
+          progress_note: string | null
+          session_id: string
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_id: string
+          progress_note?: string | null
+          session_id: string
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_id?: string
+          progress_note?: string | null
+          session_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attributions: {
         Row: {
           created_at: string
@@ -68,6 +110,7 @@ export type Database = {
           id: string
           marked: boolean
           owner_id: string
+          session_id: string | null
           title: string
           updated_at: string
         }
@@ -79,6 +122,7 @@ export type Database = {
           id?: string
           marked?: boolean
           owner_id: string
+          session_id?: string | null
           title: string
           updated_at?: string
         }
@@ -90,7 +134,52 @@ export type Database = {
           id?: string
           marked?: boolean
           owner_id?: string
+          session_id?: string | null
           title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          id: string
+          lesson_plan: string | null
+          owner_id: string
+          school: string | null
+          session_date: string
+          session_time: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lesson_plan?: string | null
+          owner_id: string
+          school?: string | null
+          session_date: string
+          session_time?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lesson_plan?: string | null
+          owner_id?: string
+          school?: string | null
+          session_date?: string
+          session_time?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: []

@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Users, FileText, CheckSquare } from "lucide-react";
+import { LogOut, Users, FileText, CheckSquare, CalendarDays } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -17,6 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { to: "/students", label: "Students", icon: Users },
+    { to: "/sessions", label: "Sessions", icon: CalendarDays },
     { to: "/documents", label: "Documents", icon: FileText },
     { to: "/to-mark", label: "To mark", icon: CheckSquare },
   ];

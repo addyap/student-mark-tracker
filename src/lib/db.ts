@@ -15,6 +15,7 @@ export type Document = {
   collective_mark: number | null;
   collective_mark_max: number | null;
   marked: boolean;
+  session_id: string | null;
 };
 
 export type Attribution = {
