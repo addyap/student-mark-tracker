@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDate } from "./sessions";
+import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/sessions/$id")({
   head: () => ({ meta: [{ title: "Session — Trainer" }] }),
