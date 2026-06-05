@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { avg, pct, type Student } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { ArrowLeft, ExternalLink, CalendarDays, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/students/$id")({
