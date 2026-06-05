@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { CourseSelect } from "@/components/CourseSelect";
 
 export const Route = createFileRoute("/_authenticated/documents/$id")({
   head: () => ({ meta: [{ title: "Document — Trainer" }] }),
