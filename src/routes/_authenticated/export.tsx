@@ -37,9 +37,11 @@ function ExportPage() {
   const today = new Date().toISOString().slice(0, 10);
   const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth() - 1);
   const [school, setSchool] = useState<string>("__all__");
+  const [courseId, setCourseId] = useState<string>("__all__");
   const [from, setFrom] = useState(monthAgo.toISOString().slice(0, 10));
   const [to, setTo] = useState(today);
   const [busy, setBusy] = useState<string | null>(null);
+  const { data: courses = [] } = useCourses();
 
   const { data: schools = [] } = useQuery({
     queryKey: ["schools"],
