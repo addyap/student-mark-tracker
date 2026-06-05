@@ -67,7 +67,7 @@ function CoursesPage() {
           <Button onClick={openNew} className="mt-6"><Plus className="h-4 w-4 mr-1" /> Add course</Button>
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {courses.map((c) => (
             <div key={c.id} className="group bg-card border rounded-lg p-5 hover:border-primary transition-colors">
               <div className="flex items-start justify-between gap-3">
