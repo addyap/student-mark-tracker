@@ -300,17 +300,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedCoursesRouteChildren {
-  AuthenticatedCoursesIdRoute: typeof AuthenticatedCoursesIdRoute
-}
-
-const AuthenticatedCoursesRouteChildren: AuthenticatedCoursesRouteChildren = {
-  AuthenticatedCoursesIdRoute: AuthenticatedCoursesIdRoute,
-}
-
-const AuthenticatedCoursesRouteWithChildren =
-  AuthenticatedCoursesRoute._addFileChildren(AuthenticatedCoursesRouteChildren)
-
 interface AuthenticatedDocumentsRouteChildren {
   AuthenticatedDocumentsIdRoute: typeof AuthenticatedDocumentsIdRoute
 }
@@ -350,6 +339,17 @@ const AuthenticatedStudentsRouteWithChildren =
   AuthenticatedStudentsRoute._addFileChildren(
     AuthenticatedStudentsRouteChildren,
   )
+
+interface AuthenticatedCoursesRouteChildren {
+  AuthenticatedCoursesIdRoute: typeof AuthenticatedCoursesIdRoute
+}
+
+const AuthenticatedCoursesRouteChildren: AuthenticatedCoursesRouteChildren = {
+  AuthenticatedCoursesIdRoute: AuthenticatedCoursesIdRoute,
+}
+
+const AuthenticatedCoursesRouteWithChildren =
+  AuthenticatedCoursesRoute._addFileChildren(AuthenticatedCoursesRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRouteWithChildren
