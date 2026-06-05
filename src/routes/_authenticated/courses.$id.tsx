@@ -130,8 +130,8 @@ function CoursePage() {
         ) : (
           <div className="bg-card border rounded-lg divide-y mt-3">
             {students.map((s) => (
-              <label key={s.id} className="p-3 flex items-center gap-3 cursor-pointer">
-                <Checkbox checked={enrolledIds.has(s.id)} onCheckedChange={(c) => toggleEnrollment(s.id, !!c)} />
+              <label key={s.id} className="p-3 flex items-center gap-3 cursor-pointer min-h-[44px]">
+                <Checkbox checked={enrolledIds.has(s.id)} onCheckedChange={(c) => toggleEnrollment(s.id, !!c)} className="h-5 w-5" />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium">{s.name}</div>
                   {s.school && <div className="text-xs text-muted-foreground">{s.school}</div>}
@@ -157,7 +157,7 @@ function CoursePage() {
       {sessions.length === 0 ? (
         <p className="text-sm text-muted-foreground">No sessions tagged to this course yet.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="grid gap-2 lg:grid-cols-2">
           {sessions.map((s) => (
             <Link key={s.id} to="/sessions/$id" params={{ id: s.id }} className="block bg-card border rounded-lg p-3 hover:border-primary transition-colors">
               <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -176,7 +176,7 @@ function CoursePage() {
       {documents.length === 0 ? (
         <p className="text-sm text-muted-foreground">No documents tagged to this course yet.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="grid gap-2 lg:grid-cols-2">
           {documents.map((d) => (
             <Link key={d.id} to="/documents/$id" params={{ id: d.id }} className="block bg-card border rounded-lg p-3 hover:border-primary transition-colors">
               <div className="flex items-center justify-between gap-3 flex-wrap">

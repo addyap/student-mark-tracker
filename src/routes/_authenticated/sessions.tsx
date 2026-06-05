@@ -88,14 +88,14 @@ function SessionsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+      <div className="flex items-start sm:items-center justify-between mb-8 gap-3 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-semibold">Sessions</h1>
-          <p className="text-muted-foreground mt-1">Lessons in order — newest first.</p>
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold">Sessions</h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Lessons in order — newest first.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-56"><CourseSelect value={courseFilter} onChange={setCourseFilter} includeAll /></div>
-          <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4 mr-1" /> New session</Button>
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex-1 sm:w-56 sm:flex-none"><CourseSelect value={courseFilter} onChange={setCourseFilter} includeAll /></div>
+          <Button onClick={() => setOpen(true)} className="shrink-0"><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">New session</span><span className="sm:hidden">New</span></Button>
         </div>
       </div>
 

@@ -49,12 +49,12 @@ function CoursesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-start sm:items-center justify-between mb-8 gap-3 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-semibold">Courses</h1>
-          <p className="text-muted-foreground mt-1">Cohorts you teach — group students, sessions and documents by class.</p>
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold">Courses</h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Cohorts you teach — group students, sessions and documents by class.</p>
         </div>
-        <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> Add course</Button>
+        <Button onClick={openNew} className="shrink-0"><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Add course</span><span className="sm:hidden">Add</span></Button>
       </div>
 
       {isLoading ? (
@@ -67,7 +67,7 @@ function CoursesPage() {
           <Button onClick={openNew} className="mt-6"><Plus className="h-4 w-4 mr-1" /> Add course</Button>
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {courses.map((c) => (
             <div key={c.id} className="group bg-card border rounded-lg p-5 hover:border-primary transition-colors">
               <div className="flex items-start justify-between gap-3">
@@ -79,7 +79,7 @@ function CoursesPage() {
                     <div>{c.enrollments.length} {c.enrollments.length === 1 ? "student" : "students"}</div>
                   </div>
                 </Link>
-                <button onClick={() => openEdit(c)} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => openEdit(c)} aria-label="Edit course" className="text-muted-foreground hover:text-primary p-2 -m-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Pencil className="h-4 w-4" />
                 </button>
               </div>

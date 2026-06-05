@@ -212,26 +212,26 @@ function SessionPage() {
             const att = attByStudent.get(s.id);
             const checked = !!att;
             return (
-              <div key={s.id} className="p-4">
-                <div className="flex items-start gap-3">
-                  <Checkbox checked={checked} onCheckedChange={(c) => toggleAttendance(s.id, !!c)} className="mt-1" />
+              <div key={s.id} className="p-3 sm:p-4">
+                <label className="flex items-start gap-3 cursor-pointer select-none min-h-[44px]">
+                  <Checkbox checked={checked} onCheckedChange={(c) => toggleAttendance(s.id, !!c)} className="mt-1 h-5 w-5" />
                   <div className="flex-1 min-w-0">
                     <div className="font-medium">{s.name}</div>
                     {s.school && <div className="text-xs text-muted-foreground">{s.school}</div>}
-                    {checked && att && (
-                      <Textarea
-                        defaultValue={att.progress_note ?? ""}
-                        onBlur={(e) => {
-                          const v = e.target.value;
-                          if ((att.progress_note ?? "") !== v) updateNote(att.id, v);
-                        }}
-                        rows={2}
-                        placeholder="Progress note (optional) — how did they do?"
-                        className="mt-2"
-                      />
-                    )}
                   </div>
-                </div>
+                </label>
+                {checked && att && (
+                  <Textarea
+                    defaultValue={att.progress_note ?? ""}
+                    onBlur={(e) => {
+                      const v = e.target.value;
+                      if ((att.progress_note ?? "") !== v) updateNote(att.id, v);
+                    }}
+                    rows={2}
+                    placeholder="Progress note (optional) — how did they do?"
+                    className="mt-2 ml-8"
+                  />
+                )}
               </div>
             );
           })}

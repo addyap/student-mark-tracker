@@ -53,14 +53,14 @@ function StudentsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+      <div className="flex items-start sm:items-center justify-between mb-8 gap-3 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-semibold">Students</h1>
-          <p className="text-muted-foreground mt-1">Everyone you teach, tagged by school and course.</p>
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold">Students</h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Everyone you teach, tagged by school and course.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-56"><CourseSelect value={courseFilter} onChange={setCourseFilter} includeAll /></div>
-          <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" /> Add student</Button>
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex-1 sm:w-56 sm:flex-none"><CourseSelect value={courseFilter} onChange={setCourseFilter} includeAll /></div>
+          <Button onClick={openNew} className="shrink-0"><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Add student</span><span className="sm:hidden">Add</span></Button>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ function StudentsPage() {
       ) : filteredStudents.length === 0 ? (
         students.length === 0 ? <EmptyState onAdd={openNew} /> : <p className="text-muted-foreground">No students match this course filter.</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredStudents.map((s) => (
             <div key={s.id} className="group bg-card border rounded-lg p-5 hover:border-primary transition-colors">
               <div className="flex items-start justify-between gap-3">
@@ -81,7 +81,7 @@ function StudentsPage() {
                     {s.phone && <div>{s.phone}</div>}
                   </div>
                 </Link>
-                <button onClick={() => openEdit(s)} className="text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => openEdit(s)} aria-label="Edit student" className="text-muted-foreground hover:text-primary p-2 -m-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Pencil className="h-4 w-4" />
                 </button>
               </div>
