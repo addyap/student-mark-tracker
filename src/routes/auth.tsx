@@ -80,7 +80,7 @@ function AuthPage() {
             Track every<br />student's work.
           </h1>
           <p className="mt-6 max-w-sm text-primary-foreground/70">
-            A private workspace for certified English trainers. Documents, marks, and individual progress — kept clean and separate.
+            A private workspace for Antony Addy Formations. Documents, marks, and individual progress — kept clean and separate.
           </p>
         </div>
         <div className="text-xs opacity-60">© Antony Addy Formations. Private workspace.</div>
@@ -91,7 +91,7 @@ function AuthPage() {
             {mode === "signin" ? "Sign in" : "Create account"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            {mode === "signin" ? "Access your trainer dashboard." : "Set up your private workspace."}
+            {mode === "signin" ? "Access your Antony Addy Formations dashboard." : "Set up your private workspace."}
           </p>
           <form onSubmit={submit} className="mt-8 space-y-4">
             <div>

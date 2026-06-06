@@ -146,7 +146,7 @@ function ExportPage() {
       const csv = toCsv([header, ...sessionRows]);
       const courseTag = courseId === "__all__" ? "" : `_course-${(courses.find((c) => c.id === courseId)?.name ?? "course").replace(/\s+/g, "_")}`;
       const schoolTag = school === "__all__" ? "all-schools" : school.replace(/\s+/g, "_");
-      download(`trainer-report_${schoolTag}${courseTag}_${from}_${to}.csv`, csv);
+      download(`aaf-report_${schoolTag}${courseTag}_${from}_${to}.csv`, csv);
       toast.success("Report downloaded");
     } catch (e) {
       toast.error((e as Error).message);
