@@ -17,16 +17,19 @@ export function DrivePanel({ onAttach }: { onAttach: (link: string, name: string
 
   return (
     <div className="bg-card border rounded-lg p-5">
-      <div className="flex items-center justify-between gap-3 mb-3">
+      <div className="flex items-center justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <HardDrive className="h-4 w-4 text-muted-foreground" />
-          <h3 className="font-display text-base font-semibold">Google Drive folder</h3>
+          <h3 className="font-display text-base font-semibold">Drive Sync</h3>
         </div>
         <Button size="sm" variant="outline" onClick={() => q.refetch()} disabled={q.isFetching}>
           <RefreshCw className={`h-4 w-4 mr-1 ${q.isFetching ? "animate-spin" : ""}`} />
-          {q.isFetching ? "Loading…" : "Refresh from Drive"}
+          {q.isFetching ? "Loading…" : "Drive Sync"}
         </Button>
       </div>
+      <p className="text-sm text-muted-foreground mb-3">
+        Files live in your Google Drive folder — upload there, then Drive Sync to pull them in and attach.
+      </p>
 
       {q.isError && (
         <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3 mb-3">
@@ -35,7 +38,7 @@ export function DrivePanel({ onAttach }: { onAttach: (link: string, name: string
       )}
 
       {!q.isFetched && !q.isFetching && (
-        <p className="text-sm text-muted-foreground">Click "Refresh from Drive" to list files in the configured folder.</p>
+        <p className="text-sm text-muted-foreground">Click "Drive Sync" to list files in the configured folder.</p>
       )}
 
       {q.isFetched && files.length === 0 && !q.isError && (
