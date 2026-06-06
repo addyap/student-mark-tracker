@@ -28,6 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/calendar", label: "Calendar", icon: CalendarDays },
     { to: "/documents", label: "Documents", icon: FileText },
     { to: "/to-mark", label: "To mark", icon: CheckSquare },
+    { to: "/import", label: "Import", icon: Upload },
     { to: "/export", label: "Export", icon: Download },
   ];
 
