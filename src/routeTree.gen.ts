@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedToMarkRouteImport } from './routes/_authenticated/to-mark'
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
 import { Route as AuthenticatedSessionsRouteImport } from './routes/_authenticated/sessions'
+import { Route as AuthenticatedImportRouteImport } from './routes/_authenticated/import'
 import { Route as AuthenticatedExportRouteImport } from './routes/_authenticated/export'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -52,6 +53,11 @@ const AuthenticatedStudentsRoute = AuthenticatedStudentsRouteImport.update({
 const AuthenticatedSessionsRoute = AuthenticatedSessionsRouteImport.update({
   id: '/sessions',
   path: '/sessions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedImportRoute = AuthenticatedImportRouteImport.update({
+  id: '/import',
+  path: '/import',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedExportRoute = AuthenticatedExportRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRouteWithChildren
   '/export': typeof AuthenticatedExportRoute
+  '/import': typeof AuthenticatedImportRoute
   '/sessions': typeof AuthenticatedSessionsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/to-mark': typeof AuthenticatedToMarkRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRouteWithChildren
   '/export': typeof AuthenticatedExportRoute
+  '/import': typeof AuthenticatedImportRoute
   '/sessions': typeof AuthenticatedSessionsRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/to-mark': typeof AuthenticatedToMarkRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRouteWithChildren
   '/_authenticated/export': typeof AuthenticatedExportRoute
+  '/_authenticated/import': typeof AuthenticatedImportRoute
   '/_authenticated/sessions': typeof AuthenticatedSessionsRouteWithChildren
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/to-mark': typeof AuthenticatedToMarkRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/documents'
     | '/export'
+    | '/import'
     | '/sessions'
     | '/students'
     | '/to-mark'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/documents'
     | '/export'
+    | '/import'
     | '/sessions'
     | '/students'
     | '/to-mark'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
     | '/_authenticated/export'
+    | '/_authenticated/import'
     | '/_authenticated/sessions'
     | '/_authenticated/students'
     | '/_authenticated/to-mark'
@@ -251,6 +263,13 @@ declare module '@tanstack/react-router' {
       path: '/sessions'
       fullPath: '/sessions'
       preLoaderRoute: typeof AuthenticatedSessionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/import': {
+      id: '/_authenticated/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof AuthenticatedImportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/export': {
@@ -376,6 +395,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRouteWithChildren
   AuthenticatedExportRoute: typeof AuthenticatedExportRoute
+  AuthenticatedImportRoute: typeof AuthenticatedImportRoute
   AuthenticatedSessionsRoute: typeof AuthenticatedSessionsRouteWithChildren
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
   AuthenticatedToMarkRoute: typeof AuthenticatedToMarkRoute
@@ -387,6 +407,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRouteWithChildren,
   AuthenticatedExportRoute: AuthenticatedExportRoute,
+  AuthenticatedImportRoute: AuthenticatedImportRoute,
   AuthenticatedSessionsRoute: AuthenticatedSessionsRouteWithChildren,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
   AuthenticatedToMarkRoute: AuthenticatedToMarkRoute,
@@ -403,13 +424,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

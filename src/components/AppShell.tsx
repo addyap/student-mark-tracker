@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logoAsset from "@/assets/logo.png.asset.json";
-import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download, BookOpen, Menu } from "lucide-react";
+import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download, BookOpen, Menu, Upload } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -28,6 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/calendar", label: "Calendar", icon: CalendarDays },
     { to: "/documents", label: "Documents", icon: FileText },
     { to: "/to-mark", label: "To mark", icon: CheckSquare },
+    { to: "/import", label: "Import", icon: Upload },
     { to: "/export", label: "Export", icon: Download },
   ];
 
