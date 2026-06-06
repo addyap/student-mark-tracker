@@ -272,7 +272,7 @@ function StudentsImport() {
       for (const r of valid) {
         let studentId = r.existingId;
         if (r.status === "update" && studentId) {
-          const patch: Record<string, string | null> = { name: r.name };
+          const patch: { name: string; email?: string } = { name: r.name };
           if (r.email) patch.email = r.email;
           const { error } = await supabase.from("students").update(patch).eq("id", studentId);
           if (error) throw error;
