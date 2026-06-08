@@ -212,10 +212,46 @@ function DocumentPage() {
 
       <div className="mt-6">
         <DrivePanel
-          onAttach={(link, name) => {
+          onAttach={({ link, name, subfolder }) => {
             setFileUrl(link);
             if (!title.trim()) setTitle(name);
-            toast.success("Drive link attached — click Save document to persist.");
+
+            let matched: string[] = [];
+            if (subfolder) {
+              const sf = subfolder.trim().toLowerCase();
+
+              // Course match
+              const course = courses.find((c) => c.name.trim().toLowerCase() === sf);
+              if (course) { setCourseId(course.id); matched.push(`course "${course.name}"`); }
+
+              // Session match (by title or date)
+              const session = sessions.find((s) => {
+                if (s.title && s.title.trim().toLowerCase() === sf) return true;
+                if (s.session_date === subfolder.trim()) return true;
+                try {
+                  const d = new Date(s.session_date + "T00:00:00").toLocaleDateString();
+                  if (d === subfolder.trim()) return true;
+                } catch { /* ignore */ }
+                return false;
+              });
+              if (session) {
+                setSessionId(session.id);
+                matched.push(`session "${session.title ?? session.session_date}"`);
+              }
+
+              // Student match → auto-attribute after save
+              const student = students.find((s) => s.name.trim().toLowerCase() === sf);
+              if (student) {
+                toggleStudent(student.id, true);
+                matched.push(`student "${student.name}"`);
+              }
+            }
+
+            if (matched.length) {
+              toast.success(`Attached and pre-filled: ${matched.join(", ")}. Confirm and Save.`);
+            } else {
+              toast.success("Drive link attached — click Save document to persist.");
+            }
           }}
         />
       </div>
