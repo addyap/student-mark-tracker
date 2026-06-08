@@ -16,8 +16,12 @@ function readRuntimeEnv(name: string, env: unknown): string | undefined {
     if (typeof envValue === "string" && envValue.length > 0) return envValue;
   }
 
-  const viteEnv = import.meta.env as Record<string, string | undefined>;
-  const viteValue = viteEnv[name];
+  const viteValue = {
+    SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+    VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+    VITE_SUPABASE_PUBLISHABLE_KEY: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+  }[name];
   if (typeof viteValue === "string" && viteValue.length > 0) return viteValue;
 
   return undefined;
