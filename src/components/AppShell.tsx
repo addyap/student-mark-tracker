@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import logoAsset from "@/assets/logo.png.asset.json";
+const logoAsset = { url: "/logo.png" };
 import { LogOut, Users, FileText, CheckSquare, CalendarDays, LayoutDashboard, Download, BookOpen, Menu, Upload } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GlobalSearch } from "@/components/GlobalSearch";
