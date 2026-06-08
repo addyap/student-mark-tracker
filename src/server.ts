@@ -7,6 +7,39 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
+function readRuntimeEnv(name: string, env: unknown): string | undefined {
+  const processValue = process.env[name];
+  if (typeof processValue === "string" && processValue.length > 0) return processValue;
+
+  if (env && typeof env === "object") {
+    const envValue = (env as Record<string, unknown>)[name];
+    if (typeof envValue === "string" && envValue.length > 0) return envValue;
+  }
+
+  const viteValue = import.meta.env[name];
+  if (typeof viteValue === "string" && viteValue.length > 0) return viteValue;
+
+  return undefined;
+}
+
+function ensureSupabaseRuntimeEnv(env: unknown) {
+  const supabaseUrl =
+    readRuntimeEnv("SUPABASE_URL", env) ?? readRuntimeEnv("VITE_SUPABASE_URL", env);
+  const supabasePublishableKey =
+    readRuntimeEnv("SUPABASE_PUBLISHABLE_KEY", env) ??
+    readRuntimeEnv("VITE_SUPABASE_PUBLISHABLE_KEY", env);
+
+  if (supabaseUrl) {
+    process.env.SUPABASE_URL = supabaseUrl;
+    process.env.VITE_SUPABASE_URL ??= supabaseUrl;
+  }
+
+  if (supabasePublishableKey) {
+    process.env.SUPABASE_PUBLISHABLE_KEY = supabasePublishableKey;
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??= supabasePublishableKey;
+  }
+}
+
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
@@ -40,6 +73,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      ensureSupabaseRuntimeEnv(env);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
