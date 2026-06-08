@@ -16,7 +16,8 @@ function readRuntimeEnv(name: string, env: unknown): string | undefined {
     if (typeof envValue === "string" && envValue.length > 0) return envValue;
   }
 
-  const viteValue = import.meta.env[name];
+  const viteEnv = import.meta.env as Record<string, string | undefined>;
+  const viteValue = viteEnv[name];
   if (typeof viteValue === "string" && viteValue.length > 0) return viteValue;
 
   return undefined;
