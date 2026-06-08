@@ -39,35 +39,80 @@ export type DriveFile = {
   webViewLink: string | null;
   iconLink: string | null;
   modifiedTime: string | null;
+  subfolder: string | null;
 };
+
+export type DriveGroup = {
+  subfolder: string | null; // null = root
+  files: DriveFile[];
+};
+
+const FOLDER_MIME = "application/vnd.google-apps.folder";
+
+async function driveList(token: string, q: string): Promise<Array<{ id: string; name: string; mimeType: string; webViewLink?: string; iconLink?: string; modifiedTime?: string }>> {
+  const params = new URLSearchParams({
+    q,
+    fields: "files(id,name,mimeType,webViewLink,iconLink,modifiedTime)",
+    orderBy: "modifiedTime desc",
+    pageSize: "200",
+    supportsAllDrives: "true",
+    includeItemsFromAllDrives: "true",
+  });
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(
+      `Drive list failed (${res.status}). Check GOOGLE_DRIVE_FOLDER_ID and that the Google account has access to that folder. Details: ${text.slice(0, 300)}`,
+    );
+  }
+  const json = (await res.json()) as { files?: Array<{ id: string; name: string; mimeType: string; webViewLink?: string; iconLink?: string; modifiedTime?: string }> };
+  return json.files ?? [];
+}
 
 export const listDriveFiles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async (): Promise<{ files: DriveFile[]; folderId: string }> => {
+  .handler(async (): Promise<{ groups: DriveGroup[]; folderId: string }> => {
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
     if (!folderId) {
       throw new Error("GOOGLE_DRIVE_FOLDER_ID is missing in Cloud → Secrets.");
     }
     const token = await getAccessToken();
-    const params = new URLSearchParams({
-      q: `'${folderId}' in parents and trashed = false`,
-      fields: "files(id,name,mimeType,webViewLink,iconLink,modifiedTime)",
-      orderBy: "modifiedTime desc",
-      pageSize: "200",
-      supportsAllDrives: "true",
-      includeItemsFromAllDrives: "true",
-    });
-    const res = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(
-        `Drive list failed (${res.status}). Check GOOGLE_DRIVE_FOLDER_ID and that the Google account has access to that folder. Details: ${text.slice(0, 300)}`,
-      );
-    }
-    const json = (await res.json()) as { files?: DriveFile[] };
-    return { files: json.files ?? [], folderId };
+
+    // Root children (files + subfolders)
+    const rootChildren = await driveList(token, `'${folderId}' in parents and trashed = false`);
+    const subfolders = rootChildren.filter((f) => f.mimeType === FOLDER_MIME);
+    const rootFiles = rootChildren.filter((f) => f.mimeType !== FOLDER_MIME);
+
+    // Files inside each subfolder (one level deep, read-only)
+    const subGroups = await Promise.all(
+      subfolders.map(async (sf) => {
+        const files = await driveList(token, `'${sf.id}' in parents and trashed = false and mimeType != '${FOLDER_MIME}'`);
+        return {
+          subfolder: sf.name,
+          files: files.map<DriveFile>((f) => ({
+            id: f.id, name: f.name, mimeType: f.mimeType,
+            webViewLink: f.webViewLink ?? null, iconLink: f.iconLink ?? null,
+            modifiedTime: f.modifiedTime ?? null, subfolder: sf.name,
+          })),
+        };
+      }),
+    );
+
+    const groups: DriveGroup[] = [
+      ...subGroups.filter((g) => g.files.length > 0).sort((a, b) => a.subfolder!.localeCompare(b.subfolder!)),
+      {
+        subfolder: null,
+        files: rootFiles.map<DriveFile>((f) => ({
+          id: f.id, name: f.name, mimeType: f.mimeType,
+          webViewLink: f.webViewLink ?? null, iconLink: f.iconLink ?? null,
+          modifiedTime: f.modifiedTime ?? null, subfolder: null,
+        })),
+      },
+    ];
+
+    return { groups, folderId };
   });
 
 export type CalEvent = {
