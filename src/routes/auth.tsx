@@ -14,9 +14,10 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+const ALLOWED_EMAIL = "formateur@antonyaddy.com";
+
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,14 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/students", replace: true });
+      if (data.session) {
+        if (data.session.user.email?.toLowerCase() !== ALLOWED_EMAIL) {
+          supabase.auth.signOut();
+          toast.error("This account is not authorised.");
+          return;
+        }
+        navigate({ to: "/students", replace: true });
+      }
     });
   }, [navigate]);
 
@@ -32,24 +40,18 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Welcome back");
-        navigate({ to: "/students" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: `${window.location.origin}/students` },
-        });
-        if (error) throw error;
-        toast.success("Account created. You can sign in now.");
-        setMode("signin");
+      if (email.toLowerCase() !== ALLOWED_EMAIL) {
+        throw new Error("This account is not authorised.");
       }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success("Welcome back");
+      navigate({ to: "/students" });
     } catch (err) {
       toast.error((err as Error).message);
     } finally { setLoading(false); }
   }
+
 
   async function signInWithGoogle() {
     setGoogleLoading(true);
