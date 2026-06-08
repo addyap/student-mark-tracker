@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listCalendarEvents } from "@/lib/google.functions";
+import { listCalendarEvents, ensureSessionDriveFolder } from "@/lib/google.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { getOwnerId } from "@/lib/db";
 import { Button } from "@/components/ui/button";
