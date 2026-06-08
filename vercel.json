@@ -1,5 +1,10 @@
 {
   "buildCommand": "NITRO_PRESET=vercel vite build",
   "installCommand": "npm install",
+  "functions": {
+    ".vercel/output/functions/__server.func/index.mjs": {
+      "runtime": "nodejs22.x"
+    }
+  },
   "framework": null
 }
