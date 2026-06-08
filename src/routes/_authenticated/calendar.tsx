@@ -17,6 +17,7 @@ function CalendarPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const fetchEvents = useServerFn(listCalendarEvents);
+  const ensureFolder = useServerFn(ensureSessionDriveFolder);
 
   const q = useQuery({
     queryKey: ["google-calendar-events"],
@@ -43,11 +44,20 @@ function CalendarPage() {
         .select()
         .single();
       if (error) throw error;
+
+      // Create matching Drive subfolder so files dropped into it auto-attribute to this session.
+      try {
+        const res = await ensureFolder({ data: { session_date, title: ev.summary ?? null } });
+        if (res.created) toast.success(`Drive folder created: ${res.name}`);
+      } catch (err) {
+        toast.error(`Session created, but Drive folder failed: ${(err as Error).message}`);
+      }
       return data;
     },
     onSuccess: (data) => {
       toast.success("Session created from event");
       qc.invalidateQueries({ queryKey: ["sessions"] });
+      qc.invalidateQueries({ queryKey: ["drive-files"] });
       navigate({ to: "/sessions/$id", params: { id: data.id } });
     },
     onError: (e) => toast.error((e as Error).message),
