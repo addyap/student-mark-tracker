@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+
 const logoAsset = { url: "/logo.png" };
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,23 +56,17 @@ function AuthPage() {
   async function signInWithGoogle() {
     setGoogleLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-        extraParams: { login_hint: ALLOWED_EMAIL, prompt: "select_account" },
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth`,
+          queryParams: { login_hint: ALLOWED_EMAIL, prompt: "select_account" },
+        },
       });
-      if (result.error) throw result.error;
-      if (result.redirected) return;
-      // Post-OAuth: enforce allowlist
-      const { data } = await supabase.auth.getUser();
-      if (data.user?.email?.toLowerCase() !== ALLOWED_EMAIL) {
-        await supabase.auth.signOut();
-        throw new Error("This Google account is not authorised.");
-      }
-      toast.success("Welcome back");
-      navigate({ to: "/students" });
+      if (error) throw error;
+      // Browser will redirect to Google
     } catch (err) {
       toast.error((err as Error).message);
-    } finally {
       setGoogleLoading(false);
     }
   }
