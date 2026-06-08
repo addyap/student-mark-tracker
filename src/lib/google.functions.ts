@@ -115,6 +115,60 @@ export const listDriveFiles = createServerFn({ method: "GET" })
     return { groups, folderId };
   });
 
+export const ensureSessionDriveFolder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      session_date: z.string().min(4).max(20), // YYYY-MM-DD
+      title: z.string().max(200).nullable().optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data }): Promise<{ folderId: string; name: string; created: boolean; webViewLink: string | null }> => {
+    const parentId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    if (!parentId) throw new Error("GOOGLE_DRIVE_FOLDER_ID is missing in Cloud → Secrets.");
+    const token = await getAccessToken();
+
+    const titlePart = (data.title ?? "").trim() || "Untitled session";
+    const name = `${data.session_date} — ${titlePart}`;
+
+    // Look for existing folder with same name (read-only check; never modify)
+    const safeName = name.replace(/'/g, "\\'");
+    const searchParams = new URLSearchParams({
+      q: `'${parentId}' in parents and trashed = false and mimeType = '${FOLDER_MIME}' and name = '${safeName}'`,
+      fields: "files(id,name,webViewLink)",
+      pageSize: "1",
+      supportsAllDrives: "true",
+      includeItemsFromAllDrives: "true",
+    });
+    const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?${searchParams}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!searchRes.ok) {
+      const text = await searchRes.text();
+      throw new Error(`Drive search failed (${searchRes.status}). Details: ${text.slice(0, 300)}`);
+    }
+    const searchJson = (await searchRes.json()) as { files?: Array<{ id: string; name: string; webViewLink?: string }> };
+    const existing = searchJson.files?.[0];
+    if (existing) {
+      return { folderId: existing.id, name: existing.name, created: false, webViewLink: existing.webViewLink ?? null };
+    }
+
+    // Create the folder. Requires drive.file (or drive) scope on the refresh token.
+    const createRes = await fetch("https://www.googleapis.com/drive/v3/files?supportsAllDrives=true&fields=id,name,webViewLink", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ name, mimeType: FOLDER_MIME, parents: [parentId] }),
+    });
+    if (!createRes.ok) {
+      const text = await createRes.text();
+      throw new Error(
+        `Drive folder create failed (${createRes.status}). The refresh token likely lacks 'drive.file' scope — re-authorise GOOGLE_REFRESH_TOKEN with that scope added. Details: ${text.slice(0, 300)}`,
+      );
+    }
+    const created = (await createRes.json()) as { id: string; name: string; webViewLink?: string };
+    return { folderId: created.id, name: created.name, created: true, webViewLink: created.webViewLink ?? null };
+  });
+
 export type CalEvent = {
   id: string;
   summary: string | null;
