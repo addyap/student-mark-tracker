@@ -23,6 +23,7 @@ function DocumentPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { data: courses = [] } = useCourses();
 
   const { data: doc } = useQuery({
     queryKey: ["document", id],
