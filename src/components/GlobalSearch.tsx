@@ -73,7 +73,7 @@ export function GlobalSearch() {
         className="pl-8 h-9 bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/60 focus-visible:bg-white/15 focus-visible:ring-white/40"
       />
       {open && q.trim().length >= 2 && (
-        <div className="absolute z-50 mt-2 w-[22rem] right-0 sm:left-0 sm:right-auto bg-popover text-popover-foreground border rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] right-0 sm:left-0 sm:right-auto bg-popover text-popover-foreground border rounded-lg shadow-lg overflow-hidden">
           {loading && hits.length === 0 ? (
             <div className="p-4 text-sm text-muted-foreground">Searching…</div>
           ) : hits.length === 0 ? (

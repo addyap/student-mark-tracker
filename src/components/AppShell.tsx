@@ -42,12 +42,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
 
           {/* Desktop search */}
-          <div className="hidden md:block flex-1 max-w-xs">
+          <div className="hidden lg:block flex-1 max-w-xs">
             <GlobalSearch />
           </div>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Desktop nav — lg: and up only, so it never renders in the cramped icon-only mid-range a md: breakpoint would hit on tablets (e.g. iPad portrait) */}
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
               const active = pathname.startsWith(item.to);
               return (
@@ -59,13 +59,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
-                  <span className="hidden lg:inline">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
             <button onClick={signOut} className="ml-1 flex items-center gap-2 px-2.5 py-2 rounded-md text-sm text-primary-foreground/75 hover:text-white hover:bg-white/10">
               <LogOut className="h-4 w-4" />
-              <span className="hidden lg:inline">Sign out</span>
+              <span>Sign out</span>
             </button>
           </nav>
 
@@ -74,7 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SheetTrigger asChild>
               <button
                 aria-label="Open menu"
-                className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-md text-primary-foreground/90 hover:bg-white/10"
+                className="lg:hidden inline-flex items-center justify-center h-11 w-11 rounded-md text-primary-foreground/90 hover:bg-white/10"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -113,7 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
         </div>
-        <div className="md:hidden px-4 pb-3">
+        <div className="lg:hidden px-4 pb-3">
           <GlobalSearch />
         </div>
       </header>
