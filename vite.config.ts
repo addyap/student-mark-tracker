@@ -60,6 +60,15 @@ export default defineConfig(async ({ command }) => {
   }
 
   return {
+    // Vercel has no VITE_SUPABASE_* env vars configured (Lovable's wrapper baked
+    // these in at build time instead) — inline the same publishable/anon values
+    // here until real env vars are set in the Vercel project settings.
+    define: {
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify("https://pvutvfbfjqlxagoqbmoi.supabase.co"),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2dXR2ZmJmanFseGFnb3FibW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTAyNzUsImV4cCI6MjA5NjIyNjI3NX0.vaLd9xRbT9jJtJwjm1v_6Z0bu9EOees89FtJY-Z-Q3c",
+      ),
+    },
     css: { transformer: "lightningcss" },
     resolve: {
       alias: {
