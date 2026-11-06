@@ -86,7 +86,7 @@ function AuthPage() {
             A private workspace for Antony Addy Formations. Documents, marks, and individual progress — kept clean and separate.
           </p>
         </div>
-        <div className="text-xs opacity-60">© Antony Addy Formations. Private workspace.</div>
+        <div className="text-xs opacity-60">© Antony Addy Formations. Private workspace. · Website by <a href="https://thevitrine.fr/en/" target="_blank" rel="noopener" className="underline underline-offset-2">The Vitrine</a></div>
       </div>
       <div className="flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-sm">
